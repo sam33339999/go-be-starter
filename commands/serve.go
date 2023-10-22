@@ -1,6 +1,7 @@
 package commands
 
 import (
+	"github.com/sam33339999/go-be-starter/api/routes"
 	"github.com/sam33339999/go-be-starter/lib"
 	"github.com/spf13/cobra"
 )
@@ -19,11 +20,11 @@ func (s *ServeCommand) Run() lib.CommandRunner {
 		env lib.Env,
 		router lib.RequestHandler,
 		logger lib.Logger,
-		// route routes.Routes,
+		route routes.Routes,
 		// database lib.Database,
 	) {
 		// middleware.Setup()
-		// route.Setup()
+		route.Setup()
 
 		logger.Info("Running server")
 		_ = router.Gin.Run(":8888")
