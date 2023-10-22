@@ -6,6 +6,7 @@ import (
 	"github.com/sam33339999/go-be-starter/lib"
 	"github.com/spf13/cobra"
 	"go.uber.org/fx"
+	"go.uber.org/fx/fxevent"
 )
 
 var cmds = map[string]lib.Command{
@@ -30,11 +31,11 @@ func WrapSubCommand(
 		Use:   name,
 		Short: cmd.Short(),
 		Run: func(c *cobra.Command, args []string) {
-			// logger := lib.GetLogger()
+			logger := lib.GetLogger()
 			opts := fx.Options(
-				// fx.WithLogger(func() fxevent.Logger {
-				// 	return logger.GetFxLogger()
-				// }),
+				fx.WithLogger(func() fxevent.Logger {
+					return logger.GetFxLogger()
+				}),
 				fx.Invoke(cmd.Run()),
 			)
 			ctx := context.Background()
@@ -43,7 +44,7 @@ func WrapSubCommand(
 			defer app.Stop(ctx)
 
 			if err != nil {
-				panic(err)
+				logger.Panic(err)
 			}
 		},
 	}
