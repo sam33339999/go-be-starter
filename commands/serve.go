@@ -19,14 +19,14 @@ func (s *ServeCommand) Run() lib.CommandRunner {
 		// middleware middlewares.Middlewares,
 		env lib.Env,
 		router lib.RequestHandler,
-		logger lib.Logger,
 		route routes.Routes,
+		logger lib.Logger,
 		database lib.Database,
 	) {
 		// middleware.Setup()
 		route.Setup()
 
-		logger.Info("Running server")
+		logger.Info("!!!Running server")
 		_ = router.Gin.Run(":8888")
 	}
 }

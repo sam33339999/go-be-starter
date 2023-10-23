@@ -8,7 +8,7 @@ import (
 type AuthRoutes struct {
 	logger     lib.Logger
 	handler    lib.RequestHandler
-	controller controllers.AuthController
+	controller controllers.JWTAuthController
 }
 
 func (s AuthRoutes) Setup() {
@@ -17,6 +17,7 @@ func (s AuthRoutes) Setup() {
 	api := s.handler.Gin.Group("/api")
 	{
 		api.GET("/login", s.controller.Login)
+		api.GET("/register", s.controller.Register)
 	}
 }
 
