@@ -21,7 +21,7 @@ func (s *ServeCommand) Run() lib.CommandRunner {
 		router lib.RequestHandler,
 		logger lib.Logger,
 		route routes.Routes,
-		// database lib.Database,
+		database lib.Database,
 	) {
 		// middleware.Setup()
 		route.Setup()
