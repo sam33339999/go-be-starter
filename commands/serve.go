@@ -1,8 +1,11 @@
 package commands
 
 import (
+	"fmt"
+
 	"github.com/sam33339999/go-be-starter/api/routes"
 	"github.com/sam33339999/go-be-starter/lib"
+	"github.com/sam33339999/go-be-starter/middlewares"
 	"github.com/spf13/cobra"
 )
 
@@ -16,14 +19,15 @@ func (s *ServeCommand) SetUp(cmd *cobra.Command) {}
 
 func (s *ServeCommand) Run() lib.CommandRunner {
 	return func(
-		// middleware middlewares.Middlewares,
+		middleware middlewares.Middlewares,
 		env lib.Env,
 		router lib.RequestHandler,
 		route routes.Routes,
 		logger lib.Logger,
 		database lib.Database,
 	) {
-		// middleware.Setup()
+		fmt.Printf("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX %+v", middleware)
+		middleware.Setup()
 		route.Setup()
 
 		logger.Info("Running server")

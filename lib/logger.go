@@ -2,7 +2,6 @@ package lib
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"go.uber.org/fx/fxevent"
@@ -137,7 +136,6 @@ func newLogger(env Env) Logger {
 	logOutput := env.LogOutput
 
 	if env.Environment == "development" {
-		fmt.Println("encode level")
 		config.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
 	}
 
