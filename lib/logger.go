@@ -39,7 +39,17 @@ func GetLogger() Logger {
 	return *globalLogger
 }
 
+// sugared logger -> 加工的 logger
+// 大部分的功能都是相同的；並且透過 `.Sugar()` 來獲取一個 `SugaredLogger`
+// 然後使用 SugaredLogger 以 printf 格式紀錄語句
+func newSugaredLogger(logger *zap.Logger) *Logger {
+	return &Logger{
+		SugaredLogger: logger.Sugar(),
+	}
+}
+
 // GetFxLogger gets logger for go-fx
+// 依賴注入使用的 logger
 func (l *Logger) GetFxLogger() fxevent.Logger {
 	logger := zapLogger.WithOptions(
 		zap.WithCaller(false),
@@ -48,13 +58,11 @@ func (l *Logger) GetFxLogger() fxevent.Logger {
 	// return &FxLogger
 	return &FxLogger{Logger: newSugaredLogger(logger)}
 }
-func newSugaredLogger(logger *zap.Logger) *Logger {
-	return &Logger{
-		SugaredLogger: logger.Sugar(),
-	}
-}
 
 // LogEvent log event for fx logger
+// https://pkg.go.dev/go.uber.org/fx@v1.20.1/fxevent#Logger
+// 提到了 type Logger interface { LogEvent(Event) }
+// 因此我們需要實作 LogEvent
 func (l *FxLogger) LogEvent(event fxevent.Event) {
 	switch e := event.(type) {
 	case *fxevent.OnStartExecuting:
@@ -124,6 +132,7 @@ func (l *FxLogger) LogEvent(event fxevent.Event) {
 // newLogger sets up logger
 func newLogger(env Env) Logger {
 
+	// 獲取 zap 設定檔(開發模式)
 	config := zap.NewDevelopmentConfig()
 	logOutput := env.LogOutput
 
@@ -155,8 +164,8 @@ func newLogger(env Env) Logger {
 	config.Level.SetLevel(level)
 
 	zapLogger, _ = config.Build()
-	logger := newSugaredLogger(zapLogger)
 
+	logger := newSugaredLogger(zapLogger)
 	return *logger
 }
 

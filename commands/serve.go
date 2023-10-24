@@ -26,8 +26,13 @@ func (s *ServeCommand) Run() lib.CommandRunner {
 		// middleware.Setup()
 		route.Setup()
 
-		logger.Info("!!!Running server")
-		_ = router.Gin.Run(":8888")
+		logger.Info("Running server")
+
+		if env.ServerPort == "" {
+			_ = router.Gin.Run(":8888")
+		} else {
+			_ = router.Gin.Run(":" + env.ServerPort)
+		}
 	}
 }
 

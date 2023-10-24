@@ -11,3 +11,10 @@ go get -u github.com/spf13/viper
 ```
 
 [构建微服务的十大 Go 框架/库](https://server.51cto.com/article/648455.html)
+
+
+# Initial project
+```shell
+go mod install
+```
+
