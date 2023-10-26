@@ -1,8 +1,6 @@
 package commands
 
 import (
-	"fmt"
-
 	"github.com/sam33339999/go-be-starter/api/routes"
 	"github.com/sam33339999/go-be-starter/lib"
 	"github.com/sam33339999/go-be-starter/middlewares"
@@ -26,7 +24,6 @@ func (s *ServeCommand) Run() lib.CommandRunner {
 		logger lib.Logger,
 		database lib.Database,
 	) {
-		fmt.Printf("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX %+v", middleware)
 		middleware.Setup()
 		route.Setup()
 

@@ -36,7 +36,7 @@ func (jwt JWTAuthController) Register(c *gin.Context) {
 }
 
 func (jwt JWTAuthController) Login(c *gin.Context) {
-	jwt.logger.Debug("[Auth Controller] Logging in user")
+	// jwt.logger.Debug("[Auth Controller] Logging in user")
 
 	c.JSON(200, gin.H{
 		"message": "login route",

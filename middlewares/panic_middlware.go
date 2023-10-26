@@ -47,9 +47,9 @@ func (m PanicMiddleware) Handler() gin.HandlerFunc {
 					eris := fmt.Sprintf("%v", eris.ToJSON(err, true))
 
 					c.AbortWithStatusJSON(400, gin.H{
-						"StatusCode": 400,
-						"Message":    eris,
-						"Items":      errorMessage,
+						"statusCode": 400,
+						"details":    eris,
+						"message":    errorMessage,
 					})
 				}
 				return
