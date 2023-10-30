@@ -24,9 +24,11 @@ func (s AuthRoutes) Setup() {
 func NewAuthRoutes(
 	logger lib.Logger,
 	handler lib.RequestHandler,
+	controller controllers.JWTAuthController,
 ) AuthRoutes {
 	return AuthRoutes{
-		logger:  logger,
-		handler: handler,
+		logger:     logger,
+		handler:    handler,
+		controller: controller,
 	}
 }

@@ -23,9 +23,11 @@ func (s UserRoutes) Setup() {
 func NewUserRoutes(
 	logger lib.Logger,
 	handler lib.RequestHandler,
+	controller controllers.UserController,
 ) UserRoutes {
 	return UserRoutes{
-		logger:  logger,
-		handler: handler,
+		logger:     logger,
+		handler:    handler,
+		controller: controller,
 	}
 }
