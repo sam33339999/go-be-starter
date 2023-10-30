@@ -7,20 +7,20 @@ import (
 )
 
 type JWTAuthController struct {
-	logger      lib.Logger
-	service     domains.AuthService
-	userService domains.UserService
+	logger  lib.Logger
+	service domains.AuthService
+	// userService domains.UserService
 }
 
 func NewJwtAuthController(
 	logger lib.Logger,
 	service domains.AuthService,
-	userService domains.UserService,
+	// userService domains.UserService,
 ) JWTAuthController {
 	return JWTAuthController{
-		logger:      logger,
-		service:     service,
-		userService: userService,
+		logger:  logger,
+		service: service,
+		// userService: userService,
 	}
 }
 

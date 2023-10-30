@@ -1,13 +1,16 @@
 package domains
 
 import (
-	"github.com/sam33339999/go-be-starter/lib"
+	"github.com/sam33339999/go-be-starter/models"
+	"gorm.io/gorm"
 )
 
-type UserService struct{}
+type UserService interface {
+	WithTrx(trxHandle *gorm.DB) UserService
+	GetOneUser(id uint) (models.User, error)
+	GetAllUser() ([]models.User, error)
 
-func NewUserService(
-	logger lib.Logger,
-) UserService {
-	return UserService{}
+	CreateUser(models.User) error
+	UpdateUser(models.User) error
+	DeleteUser(models.User) error
 }

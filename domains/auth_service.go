@@ -1,13 +1,10 @@
 package domains
 
 import (
-	"github.com/sam33339999/go-be-starter/lib"
+	"github.com/sam33339999/go-be-starter/models"
 )
 
-type AuthService struct{}
-
-func NewAuthService(
-	logger lib.Logger,
-) AuthService {
-	return AuthService{}
+type AuthService interface {
+	Authorize(token string) (bool, error)
+	CreateToken(models.User) string
 }
