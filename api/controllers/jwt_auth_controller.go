@@ -7,20 +7,20 @@ import (
 )
 
 type JWTAuthController struct {
-	logger      lib.Logger
-	service     domains.AuthService
-	userService domains.UserService
+	logger  lib.Logger
+	service domains.AuthService
+	// userService domains.UserService
 }
 
 func NewJwtAuthController(
 	logger lib.Logger,
 	service domains.AuthService,
-	userService domains.UserService,
+	// userService domains.UserService,
 ) JWTAuthController {
 	return JWTAuthController{
-		logger:      logger,
-		service:     service,
-		userService: userService,
+		logger:  logger,
+		service: service,
+		// userService: userService,
 	}
 }
 
@@ -38,7 +38,9 @@ func (jwt JWTAuthController) Register(c *gin.Context) {
 func (jwt JWTAuthController) Login(c *gin.Context) {
 	jwt.logger.Debug("[Auth Controller] Logging in user")
 
+	token := jwt.service.CreateToken()
+
 	c.JSON(200, gin.H{
-		"message": "login route",
+		"token": token,
 	})
 }

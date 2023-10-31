@@ -11,6 +11,7 @@ import (
 
 var cmds = map[string]lib.Command{
 	"app:serve": NewServeCommand(),
+	"jwt:gen":   NewJwtTokenGenCommand(),
 }
 
 func GetSubCommands(opt fx.Option) []*cobra.Command {
