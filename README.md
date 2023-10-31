@@ -33,3 +33,6 @@ go mod download
 go run . app:serve
 ```
 
+
+### JWT Token & Secret
+- [simple-jwt-authentication-for-golang-part-1](https://medium.com/@stle/simple-jwt-authentication-for-golang-part-1-6f314b456aa)
