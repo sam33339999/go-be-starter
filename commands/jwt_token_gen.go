@@ -22,22 +22,20 @@ func (s *JwtTokenGenCommand) Run() lib.CommandRunner {
 	) []byte {
 		logger.Infof("jwt secret is : %+s", env.JWTSecret)
 
-		src := []byte("hello world this is src secret 1234567890")
-		maxEnLen := hex.EncodedLen(len(src)) // 最大编码长度
+		src := []byte("hello world this is jwt secret")
+		maxEnLen := hex.EncodedLen(len(src)) // 最大編碼長度
 		dst1 := make([]byte, maxEnLen)
 		n := hex.Encode(dst1, src)
 
 		logger.Infof("encode content: %s\n", dst1[:n])
 
-		secretbite, err := hex.DecodeString(string(dst1[:]))
-		// secretbite, err := hex.DecodeString("48656c6c6f20476f7068657221")
-
+		secretBite, err := hex.DecodeString(string(dst1[:]))
 		if err != nil {
 			panic(err)
 		}
 
-		logger.Infof("secretbite is : %+s", secretbite)
-		return secretbite
+		logger.Infof("secret bite is : %+s", secretBite)
+		return secretBite
 	}
 }
 

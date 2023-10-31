@@ -3,7 +3,9 @@
         "Debugf",
         "Gorm",
         "gormlogger",
+        "Infof",
         "newlogger",
-        "Warnf"
+        "Warnf",
+        "Warnln"
     ]
 }

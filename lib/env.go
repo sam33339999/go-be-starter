@@ -8,6 +8,7 @@ import (
 
 // Env has environment stored
 type Env struct {
+	AppName     string `mapstructure:"APP_NAME"`
 	ServerPort  string `mapstructure:"SERVER_PORT"`
 	Environment string `mapstructure:"ENV"`
 	LogOutput   string `mapstructure:"LOG_OUTPUT"`
