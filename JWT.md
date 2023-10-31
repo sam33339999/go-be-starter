@@ -2,7 +2,7 @@
 
 ## Base on golang-jwt @v5.0.0
 
-- [registered_claims](github.com/golang-jwt/jwt/v5@v5.0.0/registered_claims.go)
+- [registered_claims](https://github.com/golang-jwt/jwt/blob/v5/registered_claims.go)
 
 ```go
 type RegisteredClaims struct {
