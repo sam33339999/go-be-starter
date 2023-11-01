@@ -44,3 +44,13 @@ func (jwt JWTAuthController) Login(c *gin.Context) {
 		"token": token,
 	})
 }
+
+func (jwt JWTAuthController) MockLogin(c *gin.Context) {
+	jwt.logger.Debug("[Auth Controller] Logging in user")
+
+	token := jwt.service.Attempt(1)
+	c.JSON(200, gin.H{
+		"attempt": 1,
+		"token":   token,
+	})
+}

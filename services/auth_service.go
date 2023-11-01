@@ -11,17 +11,20 @@ import (
 )
 
 type AuthService struct {
-	env    lib.Env
-	logger lib.Logger
+	env         lib.Env
+	logger      lib.Logger
+	userService domains.UserService
 }
 
 func NewJWTAuthService(
 	env lib.Env,
 	logger lib.Logger,
+	userService domains.UserService,
 ) domains.AuthService {
 	return AuthService{
-		env:    env,
-		logger: logger,
+		env:         env,
+		logger:      logger,
+		userService: userService,
 	}
 }
 
@@ -66,4 +69,9 @@ func (s AuthService) CreateToken() string {
 		log.Fatalf("Error signing token: %v", err)
 	}
 	return ss
+}
+
+func (s AuthService) Attempt(id uint) string {
+
+	return ""
 }
