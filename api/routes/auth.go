@@ -18,6 +18,7 @@ func (s AuthRoutes) Setup() {
 	{
 		api.GET("/login", s.controller.Login)
 		api.GET("/register", s.controller.Register)
+		api.GET("/refresh-token", s.controller.Register)
 	}
 }
 

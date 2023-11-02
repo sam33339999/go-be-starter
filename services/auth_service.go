@@ -2,6 +2,7 @@ package services
 
 import (
 	"errors"
+	"fmt"
 	"log"
 	"time"
 
@@ -47,23 +48,67 @@ func (s AuthService) Authorize(tokenString string) (bool, error) {
 	return false, errors.New("count not handle token")
 }
 
-func (s AuthService) CreateToken() string {
-	mySigningKey := s.env.JWTSecret
+const (
+	TYPE_ACCESS  = "access"
+	TYPE_REFRESH = "refresh"
+)
+
+func (s AuthService) genTypeToken(tokenType string) (string, error) {
+	var secret string = ""
+	var ttl int64 = 0
+	if tokenType == TYPE_ACCESS {
+		secret = s.env.JWTSecret
+		ttl = s.env.JWTTtl
+	}
+
+	if tokenType == TYPE_REFRESH {
+		secret = s.env.RefreshJWTSecret
+		ttl = s.env.RefreshJWTTtl
+	}
+
+	if secret == "" || ttl == 0 {
+		return "", errors.New("invalid token type or env not setting.")
+	}
 
 	claims := &jwt.RegisteredClaims{
-		ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 72)),
+		// 時間計算的寫法，如果是常數可以直接寫數字；但是如果是變數，則需要使用 time.Duration() 來轉換
+		ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * time.Duration(ttl))),
 		Issuer:    s.env.AppName,
 		IssuedAt:  jwt.NewNumericDate(time.Now()),
 	}
 
-	// 目前使用最簡單的 HS256 簽名方法
+	// 目前使用 HS256 簽名方法
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	// 進行簽名時，需要將對應的字串轉為 []byte
-	ss, err := token.SignedString([]byte(mySigningKey))
+	ss, err := token.SignedString([]byte(secret))
+	return ss, err
+}
+
+func (s AuthService) CreateToken() (string, string) {
+	token, err := s.genTypeToken(TYPE_ACCESS)
 
 	if err != nil {
 		log.Fatalf("Error signing token: %v", err)
 	}
-	return ss
+	refreshToken, err := s.genTypeToken(TYPE_REFRESH)
+
+	if err != nil {
+		log.Fatalf("Error signing token: %v", err)
+	}
+
+	return token, refreshToken
+}
+
+func (s AuthService) RefreshToken(refreshToken string) (string, string, error) {
+	token, err := jwt.Parse(refreshToken, func(token *jwt.Token) (interface{}, error) {
+		return []byte(s.env.JWTSecret), nil
+	})
+
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		fmt.Println(claims["foo"], claims["nbf"])
+	} else {
+		s.logger.Errorf("Couldn't handle this token: %+v\n", err)
+	}
+	return "", "", nil
 }

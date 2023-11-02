@@ -38,9 +38,10 @@ func (jwt JWTAuthController) Register(c *gin.Context) {
 func (jwt JWTAuthController) Login(c *gin.Context) {
 	jwt.logger.Debug("[Auth Controller] Logging in user")
 
-	token := jwt.service.CreateToken()
+	token, rToken := jwt.service.CreateToken()
 
 	c.JSON(200, gin.H{
-		"token": token,
+		"token":         token,
+		"refresh_token": rToken,
 	})
 }
