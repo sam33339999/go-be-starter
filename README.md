@@ -40,3 +40,12 @@ go run . app:serve
 ## Migrate Tools
 - [golang-migrate/migrate](https://github.com/golang-migrate/migrate)
 - [sql-migrate](https://github.com/rubenv/sql-migrate)
+
+
+## SOME CHOICE ABOUT DB CONNECT
+- db/sql
+- gorm
+- sqlx & sqlc
+
+## SOME VIDEO
+- [Backend Master Class](https://www.youtube.com/playlist?list=PLy_6D98if3ULEtXtNSY_2qN21VCKgoQAE)
