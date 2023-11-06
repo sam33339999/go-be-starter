@@ -8,6 +8,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/sam33339999/go-be-starter/domains"
 	"github.com/sam33339999/go-be-starter/lib"
+	"github.com/sam33339999/go-be-starter/models"
 )
 
 type AuthService struct {
@@ -59,7 +60,7 @@ func (s AuthService) CreateToken() string {
 		IssuedAt:  jwt.NewNumericDate(time.Now()),
 	}
 
-	// 目前使用最簡單的 HS256 簽名方法
+	// 目前使用 HS256 簽名方法
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	// 進行簽名時，需要將對應的字串轉為 []byte
@@ -71,7 +72,28 @@ func (s AuthService) CreateToken() string {
 	return ss
 }
 
-func (s AuthService) Attempt(id uint) string {
+func (s AuthService) Attempt(id uint) (string, error) {
+	user, err := s.userService.GetOneUser(id)
+	if err != nil {
+		s.logger.Panic(err)
 
-	return ""
+		return "", err
+	}
+
+	return s.createTokenByUser(user)
+}
+
+func (s AuthService) createTokenByUser(user models.User) (string, error) {
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"id":   user.ID,
+		"name": user.Name,
+	})
+
+	tokenStr, err := token.SignedString([]byte(s.env.JWTSecret))
+
+	if err != nil {
+		s.logger.Errorf("Error signing token: %v\n", err)
+	}
+	return tokenStr, nil
 }

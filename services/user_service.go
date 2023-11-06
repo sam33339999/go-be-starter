@@ -26,7 +26,6 @@ func NewUserService(
 
 func (s UserService) GetOneUser(id uint) (models.User, error) {
 	var result models.User
-	s.db.Model(models.User{ID: 10}).First(&result)
-
+	s.db.Model(models.User{ID: id}).First(&result)
 	return result, nil
 }
