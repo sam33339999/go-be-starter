@@ -36,3 +36,16 @@ go run . app:serve
 
 ### JWT Token & Secret
 - [simple-jwt-authentication-for-golang-part-1](https://medium.com/@stle/simple-jwt-authentication-for-golang-part-1-6f314b456aa)
+
+## Migrate Tools
+- [golang-migrate/migrate](https://github.com/golang-migrate/migrate)
+- [sql-migrate](https://github.com/rubenv/sql-migrate)
+
+
+## SOME CHOICE ABOUT DB CONNECT
+- db/sql
+- gorm
+- sqlx & sqlc
+
+## SOME VIDEO
+- [Backend Master Class](https://www.youtube.com/playlist?list=PLy_6D98if3ULEtXtNSY_2qN21VCKgoQAE)

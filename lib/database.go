@@ -18,6 +18,8 @@ func NewDatabase(env Env, logger Logger) Database {
 	port := env.DBPort
 	dbName := env.DBName
 
+	// MySQL
+	// ------------------------------------------------
 	// dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local",
 	// 	username,
 	// 	password,
@@ -26,6 +28,8 @@ func NewDatabase(env Env, logger Logger) Database {
 	// 	dbName,
 	// )
 
+	// PostgreSQL
+	// ------------------------------------------------
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Taipei",
 		host,
 		username,
