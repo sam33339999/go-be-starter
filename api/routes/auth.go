@@ -19,6 +19,7 @@ func (s AuthRoutes) Setup() {
 		api.GET("/login", s.controller.Login)
 		api.GET("/register", s.controller.Register)
 		api.GET("/mock-login", s.controller.MockLogin)
+		api.GET("/refresh-token", s.controller.Register)
 	}
 }
 
