@@ -1,11 +1,14 @@
 package lib
 
 import (
-	"fmt"
+	"context"
+	"time"
 
 	"go.uber.org/fx/fxevent"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+
+	gormlogger "gorm.io/gorm/logger"
 )
 
 type Logger struct {
@@ -14,6 +17,11 @@ type Logger struct {
 
 type FxLogger struct {
 	*Logger
+}
+
+type GormLogger struct {
+	*Logger
+	gormlogger.Config
 }
 
 var (
@@ -30,7 +38,17 @@ func GetLogger() Logger {
 	return *globalLogger
 }
 
+// sugared logger -> 加工的 logger
+// 大部分的功能都是相同的；並且透過 `.Sugar()` 來獲取一個 `SugaredLogger`
+// 然後使用 SugaredLogger 以 printf 格式紀錄語句
+func newSugaredLogger(logger *zap.Logger) *Logger {
+	return &Logger{
+		SugaredLogger: logger.Sugar(),
+	}
+}
+
 // GetFxLogger gets logger for go-fx
+// 依賴注入使用的 logger
 func (l *Logger) GetFxLogger() fxevent.Logger {
 	logger := zapLogger.WithOptions(
 		zap.WithCaller(false),
@@ -39,13 +57,11 @@ func (l *Logger) GetFxLogger() fxevent.Logger {
 	// return &FxLogger
 	return &FxLogger{Logger: newSugaredLogger(logger)}
 }
-func newSugaredLogger(logger *zap.Logger) *Logger {
-	return &Logger{
-		SugaredLogger: logger.Sugar(),
-	}
-}
 
 // LogEvent log event for fx logger
+// https://pkg.go.dev/go.uber.org/fx@v1.20.1/fxevent#Logger
+// 提到了 type Logger interface { LogEvent(Event) }
+// 因此我們需要實作 LogEvent
 func (l *FxLogger) LogEvent(event fxevent.Event) {
 	switch e := event.(type) {
 	case *fxevent.OnStartExecuting:
@@ -115,11 +131,11 @@ func (l *FxLogger) LogEvent(event fxevent.Event) {
 // newLogger sets up logger
 func newLogger(env Env) Logger {
 
+	// 獲取 zap 設定檔(開發模式)
 	config := zap.NewDevelopmentConfig()
 	logOutput := env.LogOutput
 
 	if env.Environment == "development" {
-		fmt.Println("encode level")
 		config.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
 	}
 
@@ -146,7 +162,76 @@ func newLogger(env Env) Logger {
 	config.Level.SetLevel(level)
 
 	zapLogger, _ = config.Build()
-	logger := newSugaredLogger(zapLogger)
 
+	logger := newSugaredLogger(zapLogger)
 	return *logger
+}
+
+// GetGormLogger gets the gorm framework logger
+func (l Logger) GetGormLogger() *GormLogger {
+	logger := zapLogger.WithOptions(
+		zap.AddCaller(),
+		zap.AddCallerSkip(3),
+	)
+
+	return &GormLogger{
+		Logger: newSugaredLogger(logger),
+		Config: gormlogger.Config{
+			LogLevel: gormlogger.Info,
+		},
+	}
+}
+
+// LogMode set log mode
+func (l *GormLogger) LogMode(level gormlogger.LogLevel) gormlogger.Interface {
+	newlogger := *l
+	newlogger.LogLevel = level
+	return &newlogger
+}
+
+// Info prints info
+func (l GormLogger) Info(ctx context.Context, str string, args ...interface{}) {
+	if l.LogLevel >= gormlogger.Info {
+		l.Debugf(str, args...)
+	}
+}
+
+// Warn prints warn messages
+func (l GormLogger) Warn(ctx context.Context, str string, args ...interface{}) {
+	if l.LogLevel >= gormlogger.Warn {
+		l.Warnf(str, args...)
+	}
+
+}
+
+// Error prints error messages
+func (l GormLogger) Error(ctx context.Context, str string, args ...interface{}) {
+	if l.LogLevel >= gormlogger.Error {
+		l.Errorf(str, args...)
+	}
+}
+
+// Trace prints trace messages
+func (l GormLogger) Trace(ctx context.Context, begin time.Time, fc func() (string, int64), err error) {
+	if l.LogLevel <= 0 {
+		return
+	}
+	elapsed := time.Since(begin)
+	if l.LogLevel >= gormlogger.Info {
+		sql, rows := fc()
+		l.Debug("[", elapsed.Milliseconds(), " ms, ", rows, " rows] ", "sql -> ", sql)
+		return
+	}
+
+	if l.LogLevel >= gormlogger.Warn {
+		sql, rows := fc()
+		l.SugaredLogger.Warn("[", elapsed.Milliseconds(), " ms, ", rows, " rows] ", "sql -> ", sql)
+		return
+	}
+
+	if l.LogLevel >= gormlogger.Error {
+		sql, rows := fc()
+		l.SugaredLogger.Error("[", elapsed.Milliseconds(), " ms, ", rows, " rows] ", "sql -> ", sql)
+		return
+	}
 }
